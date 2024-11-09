@@ -1,8 +1,8 @@
+// models/Booking.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
 const Vehicle = require("./Vehicle");
 
-// Define the Booking model
 const Booking = sequelize.define("Booking", {
   vehicleId: {
     type: DataTypes.INTEGER,
@@ -11,6 +11,14 @@ const Booking = sequelize.define("Booking", {
       model: Vehicle,
       key: "id",
     },
+  },
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   startDate: {
     type: DataTypes.DATE,

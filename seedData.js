@@ -1,3 +1,4 @@
+// seedData.js
 const sequelize = require("./database");
 const VehicleType = require("./models/VehicleType");
 const Vehicle = require("./models/Vehicle");
