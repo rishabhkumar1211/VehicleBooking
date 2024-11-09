@@ -1,14 +1,13 @@
 // database.js
 const { Sequelize } = require("sequelize");
 
-// Configure and connect to SQLite database
+// Connect to SQLite database
 const sequelize = new Sequelize({
   dialect: "sqlite",
   storage: "./database.sqlite",
-  logging: false, // Disable logging for cleaner console output
+  logging: false,
 });
 
-// Authenticate and log success or error
 sequelize
   .authenticate()
   .then(() => console.log("Database connected successfully."))

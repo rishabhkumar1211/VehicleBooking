@@ -1,21 +1,20 @@
-// models/Vehicle.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
 const VehicleType = require("./VehicleType");
 
-// Vehicle model
+// Define the Vehicle model
 const Vehicle = sequelize.define("Vehicle", {
   model: { type: DataTypes.STRING, allowNull: false },
   typeId: {
     type: DataTypes.INTEGER,
+    allowNull: false,
     references: {
       model: VehicleType,
       key: "id",
     },
-    allowNull: false,
   },
 });
 
-// Define the relationship
+// Define relationship
 Vehicle.belongsTo(VehicleType, { foreignKey: "typeId" });
 module.exports = Vehicle;

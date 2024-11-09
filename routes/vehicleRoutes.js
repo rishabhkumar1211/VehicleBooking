@@ -1,4 +1,3 @@
-// routes/vehicleRoutes.js
 const express = require("express");
 const router = express.Router();
 const { Op } = require("sequelize");
@@ -6,13 +5,11 @@ const VehicleType = require("../models/VehicleType");
 const Vehicle = require("../models/Vehicle");
 const Booking = require("../models/Booking");
 
-// Endpoint to get vehicle types by wheel count
+// Get vehicle types based on wheel count
 router.get("/vehicle-types/:wheels", async (req, res) => {
   try {
     const wheels = parseInt(req.params.wheels, 10);
-    if (isNaN(wheels)) {
-      return res.status(400).send("Invalid wheel count");
-    }
+    if (isNaN(wheels)) return res.status(400).send("Invalid wheel count");
 
     const vehicleTypes = await VehicleType.findAll({ where: { wheels } });
     res.json(vehicleTypes);
@@ -22,7 +19,7 @@ router.get("/vehicle-types/:wheels", async (req, res) => {
   }
 });
 
-// Endpoint to get vehicles by type ID
+// Get vehicles by typeId
 router.get("/vehicles/:typeId", async (req, res) => {
   try {
     const vehicles = await Vehicle.findAll({
@@ -35,12 +32,33 @@ router.get("/vehicles/:typeId", async (req, res) => {
   }
 });
 
-// Endpoint to handle vehicle booking with overlap check
+// Book vehicle with overlap check
+
 router.post("/book-vehicle", async (req, res) => {
   const { vehicleId, startDate, endDate } = req.body;
 
+  // Server-side validation for required fields
+  if (!vehicleId || !startDate || !endDate) {
+    return res
+      .status(400)
+      .json({
+        error: "Missing required fields: vehicleId, startDate, endDate",
+      });
+  }
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // Validate date format and logical date order
+  if (isNaN(start.getTime()) || isNaN(end.getTime()) || start >= end) {
+    return res
+      .status(400)
+      .json({
+        error: "Invalid date range. Ensure start date is before end date.",
+      });
+  }
+
   try {
-    // Check for overlapping bookings
     const overlappingBooking = await Booking.findOne({
       where: {
         vehicleId,
@@ -58,15 +76,14 @@ router.post("/book-vehicle", async (req, res) => {
     if (overlappingBooking) {
       return res
         .status(400)
-        .send("Vehicle is already booked for the selected dates.");
+        .json({ error: "Vehicle is already booked for the selected dates." });
     }
 
-    // Create the booking if no overlap
     await Booking.create({ vehicleId, startDate, endDate });
-    res.send("Booking confirmed!");
+    res.json({ message: "Booking confirmed!" });
   } catch (error) {
     console.error("Error booking vehicle:", error);
-    res.status(500).send("Error booking vehicle.");
+    res.status(500).json({ error: "Error booking vehicle." });
   }
 });
 

@@ -1,7 +1,6 @@
-// models/Booking.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
-const Vehicle = require("./Vehicle"); // Import the Vehicle model for association
+const Vehicle = require("./Vehicle");
 
 // Define the Booking model
 const Booking = sequelize.define("Booking", {
