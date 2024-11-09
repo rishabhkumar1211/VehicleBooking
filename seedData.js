@@ -26,6 +26,7 @@ const seedDatabase = async () => {
     typeId: cruiserType.id,
   });
   await Vehicle.create({ model: "Yamaha YZF R1", typeId: sportsType.id });
+  await Vehicle.create({ model: "BMW", typeId: sportsType.id });
 
   console.log("Database seeded successfully with realistic models.");
 };

@@ -1,4 +1,3 @@
-// routes/vehicleRoutes.js
 const express = require("express");
 const router = express.Router();
 const { Op } = require("sequelize");
@@ -37,10 +36,26 @@ router.get("/vehicles/:typeId", async (req, res) => {
 
 // Book a vehicle with overlap check
 router.post("/book-vehicle", async (req, res) => {
-  const { vehicleId, firstName, lastName, startDate, endDate } = req.body;
+  const {
+    vehicleId,
+    firstName,
+    lastName,
+    vehicleType,
+    wheels,
+    startDate,
+    endDate,
+  } = req.body;
 
   // Validation for required fields
-  if (!vehicleId || !firstName || !lastName || !startDate || !endDate) {
+  if (
+    !vehicleId ||
+    !firstName ||
+    !lastName ||
+    !vehicleType ||
+    wheels === undefined ||
+    !startDate ||
+    !endDate
+  ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -78,14 +93,17 @@ router.post("/book-vehicle", async (req, res) => {
         .json({ error: "Vehicle is already booked for the selected dates." });
     }
 
-    // Save the booking with user details
+    // Save the booking with all necessary details
     await Booking.create({
       vehicleId,
       firstName,
       lastName,
+      vehicleType,
+      wheels,
       startDate,
       endDate,
     });
+
     res.json({ message: "Booking confirmed!" });
   } catch (error) {
     console.error("Error booking vehicle:", error);
